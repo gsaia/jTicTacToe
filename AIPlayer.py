@@ -1,6 +1,13 @@
 import numpy as np
 from Game import Game, GameOver
 
+'''
+Each one of us should create a separate Evaluation Function.  
+This function is one of the most important algorithms of thisapp.
+It helps the minimax decide which move is the best move.
+
+'''
+
 class EvaluationFunction1:
     def __init__(self):    
         pass
@@ -13,7 +20,17 @@ class EvaluationFunction1:
         # '''
         return s
     
-    
+class EvaluationFunctionGenaro:
+    def __init__(self):
+        pass
+
+    def score(self, game, maximizing_player_turn=True):
+        s = 0
+        ''' 
+        # TODO:  This is a utility function.  It should return a value according
+                 to the goodness of a particular cell.
+        # '''
+        return s
     
 
 class IAPlayer:
