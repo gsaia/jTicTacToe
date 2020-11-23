@@ -1,7 +1,6 @@
 from copy import deepcopy
 import numpy as np
 
-
 class InvalidPlayerError(Exception):
     pass
 
@@ -19,8 +18,9 @@ class Game:
     BLANK = 'BLANK'
 
     def __init__(self, width = 3, height = 3, player1 = 'O'):
-        self.__width__ = width
-        self.__height__ = height
+        self.__width__ = max (width, height)
+        self.__height__ = max (width, height)
+        self.dim = self.__width__
         self.__O__ = 'O'
         self.__X__ = 'X'
         self.board = self.init_board()
@@ -31,10 +31,13 @@ class Game:
         if self.player1 == self.__X__: self.player2 = self.__O__
         self.current_player = player1
         self.state = []
+        self.last_move = {'player': None, 'move': None}
         
     def is_valid_move(self, x,y):
         # determines if move is a valid move
         # valid move means an available cell
+        if x<0 or y<0 : return False
+        if x>self.dim-1 or y>self.dim-1: return False
         if self.board[x][y] == Game.BLANK : return True
         return False        
         
@@ -47,14 +50,14 @@ class Game:
         #checks for the end of the game
         current_moves = self.move_record[self.current_player]
         #print (" Current moves of {0}: {1}".format(self.current_player,current_moves))
-        if len(current_moves)<3: return False
+        if len(current_moves)<self.dim: return False
         xs = 0
         ys = 0
         for i in range(len(current_moves)-1):
             for j in range(i+1, len(current_moves)):
                 if current_moves[i][0] == current_moves[j][0]:xs += 1
                 if current_moves[i][1] == current_moves[j][1]:ys += 1
-        if(xs ==3 and ys ==0) or (ys == 3 and xs == 0) or (xs == 0 and ys == 0): return self.player_won(self.current_player)
+        if(xs ==self.dim and ys ==0) or (ys == self.dim and xs == 0) or (xs == 0 and ys == 0): return self.player_won(self.current_player)
         #print("Tallys: {0}, {1}".format(xs, ys))
         return False
 
@@ -64,8 +67,15 @@ class Game:
         return moves
     
     def make_move(self,x,y):
-        # it takes the coordinates of a cell and places the current player there.
-        # then records the move and then switches the players
+        '''
+        it takes the coordinates of a cell and places the current player there.
+        then records the move and then switches the players
+        :param x: Row, int
+        :param y: Column, int
+        :return: Boolean
+        '''
+        self.last_move['player'] = self.current_player
+        self.last_move['move'] = (x,y)
         result = False
         try:
             if not self.is_valid_move(x,y): raise InvalidMoveError((x,y)) 
